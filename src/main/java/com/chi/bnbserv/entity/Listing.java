@@ -17,6 +17,7 @@ public class Listing {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
+    
     @Column(name = "name", length = 200)
     private String name;
 
