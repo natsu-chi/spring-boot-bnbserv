@@ -1,7 +1,6 @@
 package com.chi.bnbserv.util;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -13,8 +12,8 @@ import com.chi.bnbserv.exception.FileNotFoundException;
 public class FileUtil {
     public static byte[] getByteFromFileNIO(String fileName) throws IOException {
         File file = new File(fileName);
-        System.out.println(file.getAbsolutePath());
         if(!file.exists()) {
+            // System.out.println(file.getAbsolutePath());
             throw new FileNotFoundException(String.format("指定檔案不存在", fileName));
         }
 

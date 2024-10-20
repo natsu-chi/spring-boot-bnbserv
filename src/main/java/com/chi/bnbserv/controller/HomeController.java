@@ -1,20 +1,18 @@
 package com.chi.bnbserv.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-@RestController
+@Controller
 public class HomeController {
     @GetMapping("/home")
-    public String home() {
-        // model.addAttribute("title", "Home Page");
-        return "main";
-    }
-
-    @GetMapping("/get-data/listing")
-    public String downloadListingData() {
-        // model.addAttribute("title", "Home Page");
+    public String home(Model model) {
+        model.addAttribute("title", "Home Page");
+        model.addAttribute("path", "fragments/home :: home");
+        model.addAttribute("pathSrc", "");
+        model.addAttribute("withSrc", "N");
         return "main";
     }
     

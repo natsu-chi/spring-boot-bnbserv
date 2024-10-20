@@ -1,0 +1,20 @@
+/* ===== BACKGROUNG-IMAGE ===== */
+.bg-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-size: cover;
+}
+.bg-attachment-fixed {
+  background-attachment: fixed;
+}
+.bg-position-center {
+  background-position: center;
+  /* background-position-y: center; */
+}
+.bg-position-bottom {
+  background-position-y: bottom;
+}
+.rounded-bottom-left-xxl {
+  border-bottom-left-radius: var(--bs-border-radius-xxl) !important;
+}

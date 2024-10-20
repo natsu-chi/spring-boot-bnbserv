@@ -4,7 +4,9 @@ public interface FileService {
     /**
      * 下載檔案
      * @param String fileName
-     * @return
+     * @param String fileType
+     * @return byte[]
+     * @throws Exception
      */
     byte[] download(String fileName, String fileType) throws Exception;
 }

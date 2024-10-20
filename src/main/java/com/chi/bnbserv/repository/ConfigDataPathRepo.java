@@ -11,6 +11,6 @@ import com.chi.bnbserv.entity.ConfigDataPath;
 @Repository
 public interface ConfigDataPathRepo extends JpaRepository<ConfigDataPath, Integer> {
     Optional<ConfigDataPath> findByCity(City city);
-
+    Optional<ConfigDataPath> findByCity_Id(int cityId);
     Optional<ConfigDataPath> findByCity_NameIgnoreCase(String name);
 }
