@@ -10,11 +10,51 @@
 }
 .bg-position-center {
   background-position: center;
-  /* background-position-y: center; */
 }
 .bg-position-bottom {
   background-position-y: bottom;
 }
 .rounded-bottom-left-xxl {
   border-bottom-left-radius: var(--bs-border-radius-xxl) !important;
+}
+
+/* ===== LOADER ===== */
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 120px;
+  height: 22px;
+  border-radius: 20px;
+  color: #514b82;
+  border: 2px solid;
+  position: relative;
+}
+.loader::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor;
+  animation: l6 40s forwards;
+}
+@keyframes l6 {
+    100% {inset:0}
+}
+
+/* ===== COMPONENTS ===== */
+/* -- card -- */
+/* .card-info {
+  content: attr(data-th) " : ";
+} */
+.card-info p:before {
+  content: attr(data-th) " : ";
+}
+
+/* -- table -- */
+.custom-table th {
+  min-width: fit-content;
+}
+.custom-table td {
+  max-width: 100px;
+  max-height: 10px; 
 }

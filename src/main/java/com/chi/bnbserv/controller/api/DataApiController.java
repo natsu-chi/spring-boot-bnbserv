@@ -25,7 +25,7 @@ public class DataApiController {
     @Autowired
     ConfigDataPathRepo configDataPathRepo;
 
-    @GetMapping("/data/listing/download/listing")
+    @GetMapping("/data/listing/download/lis")
     public ResponseEntity<Object> downloadListingData(@RequestParam String city, @RequestParam String dataType) {
         FileServiceImpl fsi = new FileServiceImpl();
         String path = null;

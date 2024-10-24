@@ -1,0 +1,100 @@
+<div class="card" th:fragment="list()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="container-fluid">
+      <div class="overflow-auto vh-100 mb-3">
+        <table class="table custom-table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">資料 ID</th>
+              <th scope="col">名稱</th>
+              <th scope="col">地區</th>
+              <th scope="col">房屋類型</th>
+              <th scope="col">房間類型</th>
+              <th scope="col">容納人數</th>
+              <th scope="col">檢視詳細</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr th:each="el: ${listingList}">
+              <th scope="row" th:text="${elStat.index+1}"></th>
+              <td th:text="${el.id}"></td>
+              <td th:text="${el.name}"></td>
+              <td th:text="${el.neighbourhoodCleansed}"></td>
+              <td th:text="${el.propertyType}"></td>
+              <td th:text="${el.roomType}"></td>
+              <td th:text="${el.accommodates}"></td>
+              <td data-el-id="${el.id}"><a th:href="@{/data/listing/list/detail(id=${el.id})}" class="btn btn-sm btn-outline-primary">檢視</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group me-2" role="group" aria-label="First group">
+          <button
+            type="button"
+            th:class="${p == currentPage ? 'btn btn-primary' : 'btn btn-light'}"
+            th:each="p : ${#numbers.sequence(1, 3)}"
+            th:text="${p}"
+            th:if="${totalPages >= 3}"
+            th:attr="data-pageNumber=${p}"
+            onclick="goTopage(this);"
+          >
+            1
+          </button>
+        </div>
+        <div class="mx-2" th:if="${currentPage > 3}"><span>...</span></div>
+        <div class="btn-group me-2" role="group" aria-label="Second group">
+          <button type="button" class="btn btn-primary" th:text="${currentPage}" th:if="${ currentPage > 3 && currentPage < (totalPages-2) }">1</button>
+        </div>
+        <div class="mx-2" th:if="${totalPages > 3 && currentPage < (totalPages-2)}"><span>...</span></div>
+        <div class="btn-group" role="group" aria-label="Third group">
+          <button
+            type="button"
+            th:class="${p == currentPage ? 'btn btn-primary' : 'btn btn-light'}"
+            th:each="p : ${#numbers.sequence(totalPages-2, totalPages)}"
+            th:text="${p}"
+            th:if="${totalPages > 6}"
+            th:attr="data-pageNumber=${p}"
+            onclick="goTopage(this);"
+          >
+            1
+          </button>
+        </div>
+        <div class="btn-group ms-auto" role="group" aria-label="Four group">
+          <button
+            type="button"
+            th:class="${(currentPage != 1) ? 'btn btn-outline-primary' : 'btn btn-outline-light'}"
+            th:attr="data-pageNumber=${currentPage-1}"
+            th:attrappend="disabled=${currentPage == 1 ? 'disabled' : null}"
+            onclick="goTopage(this);"
+          >
+            上一頁
+          </button>
+          <button
+            type="button"
+            th:class="${(currentPage!= totalPages) ? 'btn btn-outline-primary' : 'btn btn-outline-light'}"
+            th:attr="data-pageNumber=${currentPage+1}"
+            th:attrappend="disabled=${currentPage == totalPages ? 'disabled' : null}"
+            onclick="goTopage(this);"
+          >
+            下一頁
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">
+  function goTopage(button) {
+    const pageNumber = button.getAttribute("data-pageNumber");
+    // 取得當前網址查詢參數的 cityId
+    const urlParams = new URLSearchParams(window.location.search);
+    const cityId = urlParams.get("cityId");
+    if (cityId != null) {
+      window.location.href = "/data/listing/list/results?cityId=" + cityId + "&page=" + pageNumber;
+    }
+  }
+</script>

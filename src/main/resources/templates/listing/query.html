@@ -1,0 +1,46 @@
+<div class="card" th:fragment="query()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="container-fluid">
+      <form id="form1" action="/api/data/listing/fetch" method="get">
+        <div class="mb-3">
+          <label for="inputSelect01" class="form-label">選擇區域</label>
+          <select id="inputSelect01" class="form-select" name="cityId" th:each="city: ${cities}">
+            <option th:text="${city.country} + ' > ' + ${city.region} + ' > ' + ${city.city}" th:value="${city.id}">option</option>
+          </select>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary" id="btnSubmit">查詢</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">
+  var flagCityId = false;
+
+  /**
+   * 檢查表單欄位是否全部輸入
+   *
+   * @param
+   * @returns {boolean}
+   */
+  function checkAllInputs() {
+    flagCityId = $("#inputSelect01").val() !== "";
+    return flagCityId;
+  }
+
+  $(document).ready(function () {
+    $("#form1").on("submit", (event) => {
+      event.preventDefault();
+      if (!checkAllInputs()) return false;
+
+      const cityId = $("#inputSelect01").val();
+
+      if (cityId !== undefined) {
+        window.location.href="/data/listing/list/results?cityId=" + cityId + "&page=1";
+      }
+    });
+  });
+</script>
