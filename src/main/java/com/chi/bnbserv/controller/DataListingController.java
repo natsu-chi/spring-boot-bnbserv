@@ -87,7 +87,7 @@ public class DataListingController {
         return "main";
     }
 
-    @GetMapping("/list/detail")
+    @GetMapping("list/detail")
     public String getMethodName(Model model, @RequestParam Long id) {
         // 以 id 查詢 listing 資料
         Listing listing = listingRepo.findById(id).orElseThrow(
@@ -101,4 +101,20 @@ public class DataListingController {
         model.addAttribute("withSrc", "Y");
         return "main";
     }
+
+    @GetMapping("fetch")
+    public String fetch(Model model) {
+        // 查詢所有城市 (回傳城市、區域、國家名稱)
+        List<CityDetailsDto> cities = cityRepo.fetchActiveCityDetails();
+        if (cities.size() == 0)
+            throw new ResourceNotFoundException("city, region, country", "active", "Y");
+
+        model.addAttribute("title", "資料管理 | 房屋資料更新");
+        model.addAttribute("cities", cities);
+        model.addAttribute("path", "listing/fetch :: fetch");
+        model.addAttribute("pathSrc", "listing/fetch :: src");
+        model.addAttribute("withSrc", "Y");
+        return "main";
+    }
+
 }
