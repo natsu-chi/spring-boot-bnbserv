@@ -38,3 +38,4 @@ application.yml
 ### dataset ###
 src/main/resources/static/dataset/csv/*
 src/main/resources/static/dataset/g-csv/*
+src/main/resources/static/dataset/gz/*

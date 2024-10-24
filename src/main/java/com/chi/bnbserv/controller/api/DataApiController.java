@@ -25,7 +25,7 @@ public class DataApiController {
     @Autowired
     ConfigDataPathRepo configDataPathRepo;
 
-    @GetMapping("/data/listing/download")
+    @GetMapping("/data/listing/download/listing")
     public ResponseEntity<Object> downloadListingData(@RequestParam String city, @RequestParam String dataType) {
         FileServiceImpl fsi = new FileServiceImpl();
         String path = null;
@@ -61,7 +61,7 @@ public class DataApiController {
                 }
                 String[] part = path.split("/");
                 fileName = part[part.length - 3] + "_" + part[part.length - 1];
-                byte[] fileByteArray = fsi.download(path, "resource");
+                byte[] fileByteArray = fsi.download(path + "/listings.csv", "resource");
                 
                 if (fileByteArray == null) throw new FileNotFoundException("無指定檔案");
                 
@@ -69,9 +69,8 @@ public class DataApiController {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
                 headers.setContentDisposition(ContentDisposition
                         .attachment()
-                        .filename(fileName)
+                        .filename(fileName + ".csv")
                         .build());
-
                 return ResponseEntity
                         .status(HttpStatus.OK)
                         .headers(headers)

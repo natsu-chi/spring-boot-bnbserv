@@ -10,11 +10,10 @@ import com.chi.bnbserv.util.FileUtil;
 public class FileServiceImpl implements FileService {
 
     private static final String DIR = "src/main/resources/static/dataset/";
-
     /**
      * 根據指定名稱、類型，下載對應檔案
      * 
-     * @param fileName
+     * @param filePath
      * @param fileType
      *  resource: static/ 目錄檔案
      *  url: 取得線上檔案
@@ -23,13 +22,14 @@ public class FileServiceImpl implements FileService {
      * @throws Exception
      */
     @Override
-    public byte[] download(String fileName, String fileType) throws Exception {
-        if(fileName.isEmpty() || fileName.trim().isBlank()) throw new FileNotFoundException("檔案名稱空白");
+    public byte[] download(String filePath, String fileType) throws Exception {
+        if(filePath.isEmpty() || filePath.trim().isBlank()) throw new FileNotFoundException("檔案名稱空白");
 
         // 根據名稱下載對應檔案
         switch (fileType) {
             case "resource":
-                byte[] resourceBytes = FileUtil.getByteFromFileNIO(DIR + fileName);
+                byte[] resourceBytes = FileUtil.getByteFromFileNIO(DIR + filePath);
+
                 if(resourceBytes != null && resourceBytes.length > 0) {
                     return resourceBytes;
                 } 
