@@ -43,11 +43,9 @@
 
 /* ===== COMPONENTS ===== */
 /* -- card -- */
-/* .card-info {
-  content: attr(data-th) " : ";
-} */
 .card-info p:before {
   content: attr(data-th) " : ";
+  font-weight: bold;
 }
 
 /* -- table -- */

@@ -86,4 +86,19 @@ public class DataListingController {
         model.addAttribute("withSrc", "Y");
         return "main";
     }
+
+    @GetMapping("/list/detail")
+    public String getMethodName(Model model, @RequestParam Long id) {
+        // 以 id 查詢 listing 資料
+        Listing listing = listingRepo.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("listing", "id", id.toString())
+        );
+        
+        model.addAttribute("title", "資料管理 | 房屋資料詳情");
+        model.addAttribute("listing", listing);
+        model.addAttribute("path", "listing/detail :: detail");
+        model.addAttribute("pathSrc", "listing/detail :: src");
+        model.addAttribute("withSrc", "Y");
+        return "main";
+    }
 }

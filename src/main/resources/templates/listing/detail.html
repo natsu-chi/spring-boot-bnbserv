@@ -1,0 +1,72 @@
+<div class="card" th:fragment="detail()">
+  <div class="card-body">
+    <!-- <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5> -->
+    <div class="container-fluid">
+      <div class="card">
+        <h5 class="card-header"><button class="btn btn-sm btn-outline-primary me-3" onclick="window.history.back();">&lt;&nbsp;回上頁</button>詳細資料</h5>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <img th:src="${listing.pictureUrl}" alt="" class="bg-cover img-thumbnail" style="max-width: 250px; max-height: 250px;" onerror="this.onerror=null;this.src='/assets/images/settings/no-image.jpg';"/>
+            </div>
+            <div class="col-md-8">
+              <div class="mb-3">
+                <h5 class="card-title text-truncate" th:text="${listing.name}" th:title="${listing.name}">Data name</h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${listing.id}">Data id</h6>
+              </div>
+
+              <div class="card-info">
+                <p class="card-text" data-th="坐落區域" th:text="${listing.neighbourhoodCleansed}">Data neighbourhoodCleansed</p>
+                <p class="card-text card-info" data-th="介紹" th:utext="${listing.description}">Data description</p>
+                <p class="card-text" data-th="原始網址" data-bs-toggle="modal" data-bs-target="#popModal01">
+                  <span class="text-primary link-redirect" th:text="${listing.listingUrl}" style="cursor: pointer"></span>
+                </p>
+                <p class="card-text" data-th="房屋類型" th:text="${listing.propertyType}">Data propertyType</p>
+                <p class="card-text" data-th="房間類型" th:text="${listing.roomType}">Data roomType</p>
+                <p class="card-text" data-th="最大容納人數" th:text="${listing.accommodates}">Data accommodates</p>
+                <p class="card-text" data-th="價格" th:text="${listing.price}">Data price</p>
+                <p class="card-text" data-th="目前有效" th:text="${listing.hasAvailability} == true ? '是' : '否'">Data hasAvailability</p>
+                <p class="card-text" data-th="目前可供訂購" th:text="${listing.instantBookable} == true ? '是' : '否'">Data instantBookable</p>
+                <p class="card-text" data-th="資料時間" th:text="${listing.lastScraped}">Data lastScraped</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertically centered scrollable modal -->
+  <div class="modal fade modal-dialog-scrollable" id="popModal01" tabindex="-1" aria-labelledby="popModal01Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="popModal01Label">即將導向外部網址...</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          即將前往外部網站 <span th:text="${listing.listingUrl}"></span><br />
+          是否確認前往？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" th:attr="data-link-text=${listing.listingUrl}" onclick="redirectSite(this);">是，我要前往</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">
+  function redirectSite(button) {
+    // 取得 data-link-text 屬性中的網址
+    const url = button.getAttribute("data-link-text");
+
+    if (url) {
+      // window.location.href = url;
+      window.open(url, '_blank');
+    } else {
+      console.error("URL 未定義");
+    }
+  }
+</script>
