@@ -42,6 +42,8 @@ public class ListingColumnBean extends CsvBean {
     @CsvBindByName
     private String longitude;
 
+    private String city_id;
+
     @CsvBindByName
     private String property_type;
 

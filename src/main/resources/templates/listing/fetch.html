@@ -31,6 +31,8 @@
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             更新中...
           </button>
+          <!-- 下一步按鈕 -->
+          <button type="button" class="btn btn-primary d-none" id="btnNextStep" onclick="nextStep();">下一步</button>
 
           <!-- 回應訊息 -->
           <span id="responseText" class="mx-3 mt-2 text-danger"></span>
@@ -43,6 +45,8 @@
 <script th:fragment="src">
   var flagCity = false;
   var flagDataType = false;
+  var city;
+  var dataType;
 
   /**
    * 檢查表單欄位是否全部輸入
@@ -54,6 +58,11 @@
     flagCity = $("#inputSelect01").val() !== "";
     flagDataType = $("#inputRadio1").prop("checked") || $("#inputRadio2").prop("checked");
     return flagCity && flagDataType;
+  }
+
+  function nextStep() {
+    $("#btnLoading").addClass("d-none");
+    window.location.href = "/data/listing/fetch/step2?city=" + city.toLowerCase();
   }
 
   /**
@@ -102,8 +111,8 @@
       event.preventDefault();
       if (!checkAllInputs()) return false;
 
-      const city = $("#inputSelect01").val();
-      const dataType = $("input[name='dataType']:checked").val();
+      city = $("#inputSelect01").val();
+      dataType = $("input[name='dataType']:checked").val();
 
       if (city !== undefined && dataType !== undefined) {
         $("#btnLoading").removeClass("d-none");
@@ -120,6 +129,9 @@
             $("#btnSubmit").text("更新成功");
             $("#btnSubmit").attr("disabled", "disabled");
             $("#btnSubmit").removeClass("d-none");
+            if(dataType === "opt2" ) {
+              $("#btnNextStep").removeClass("d-none");
+            }
           },
           error: function (error) {
             handleError(error);

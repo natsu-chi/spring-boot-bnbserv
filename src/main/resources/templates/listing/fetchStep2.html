@@ -1,0 +1,131 @@
+<div class="card" th:fragment="fetchStep2()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="container-fluid">
+      <div class="overflow-auto vh-100 mb-3">
+        <table class="table w-100">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">id</th>
+              <th scope="col">名稱</th>
+              <th scope="col">描述</th>
+              <th scope="col">地區</th>
+              <th scope="col">原始網址</th>
+              <th scope="col">圖片網址</th>
+              <th scope="col">資料時間</th>
+              <th scope="col">緯度</th>
+              <th scope="col">經度</th>
+              <th scope="col">房屋類型</th>
+              <th scope="col">房間類型</th>
+              <th scope="col">容納人數</th>
+              <th scope="col">衛浴數量</th>
+              <th scope="col">房間數</th>
+              <th scope="col">房屋設備</th>
+              <th scope="col">價格</th>
+              <th scope="col">有效資料</th>
+              <th scope="col">目前可供訂購</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr th:each="cdp: ${cdpList}">
+              <th scope="row" th:text="${cdpStat.index+1}"></th>
+              <td th:text="${cdp.id}"></td>
+              <td th:text="${cdp.name}"></td>
+              <td th:utext="${cdp.description}"></td>
+              <td th:text="${cdp.neighbourhood_cleansed}"></td>
+              <td th:text="${cdp.listing_url}"></td>
+              <td th:text="${cdp.picture_url}"></td>
+              <td th:text="${cdp.last_scraped}"></td>
+              <td th:text="${cdp.latitude}"></td>
+              <td th:text="${cdp.longitude}"></td>
+              <td th:text="${cdp.property_type}"></td>
+              <td th:text="${cdp.room_type}"></td>
+              <td th:text="${cdp.accommodates}"></td>
+              <td th:text="${cdp.bathrooms_text}"></td>
+              <td th:text="${cdp.bedrooms}"></td>
+              <td th:text="${cdp.amenities}"></td>
+              <td th:text="${cdp.price}"></td>
+              <td th:text="${cdp.has_availability}"></td>
+              <td th:text="${cdp.instant_bookable}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#popupModal" th:attr="data-bs-cityQuery=${cityQuery}">確定更新資料</button>
+      </div>
+
+      <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="popupModalLabel"></h1>
+            </div>
+            <div class="modal-body">
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="loader-spinner" id="loader"></div>
+                <div class="d-none display-1" id="resultIcon"></div>
+                <div class="d-none" id="resultTitle"></div>
+                <div class="d-none" id="resultBody"></div>
+                <div id="responseText">資料更新中...，請勿關閉視窗</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">
+  const popupModal = document.getElementById("popupModal");
+  popupModal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    const cityQuery = button.getAttribute("data-bs-cityQuery");
+    sendRequest(cityQuery);
+  })
+
+  function sendRequest(cityQuery) {
+    $.ajax({
+      url: "/api/data/listing/update",
+      method: "POST",
+      contentType: "application/json",
+      dataType: "json",
+      data: JSON.stringify({ city: cityQuery }),
+      success: function (response) {
+        let counter = 3;
+        let city = response.data;
+        $("#loader").hide();
+
+        $("#resultIcon").html('<i class="ti ti-thumb-up"></i>');
+        $("#resultIcon").addClass("text-primary");
+        $("#resultIcon").removeClass("d-none");
+
+        $("#resultTitle").html(`<h4>更新成功</h4>`);
+        $("#resultTitle").removeClass("d-none");
+
+        $("#resultBody").text(`${response.statusMsg}`);
+        $("#resultBody").removeClass("d-none");
+
+        const interval = setInterval(() => {
+          $("#responseText").text(counter + " 秒後跳轉");
+          if(counter == 0) {
+            window.location.replace("/data/listing/list/results?cityId=" + city.id + "&page=1");
+          }
+          counter--;
+        }, 1000);
+      },
+      error: function (error) {
+        // console.log(handleError(error));
+        $("#responseText").text("更新失敗");
+        $("#loader").hide();
+        $("#resultIcon").html('<i class="ti ti-xbox-x"></i>');
+        $("#resultIcon").addClass("text-danger");
+        $("#resultIcon").removeClass("d-none");
+      }
+    });
+  }
+</script>

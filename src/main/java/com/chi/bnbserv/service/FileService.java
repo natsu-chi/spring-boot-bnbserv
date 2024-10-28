@@ -1,8 +1,5 @@
 package com.chi.bnbserv.service;
 
-import java.io.File;
-import java.io.IOException;
-
 public interface FileService {
     /**
      * 下載檔案

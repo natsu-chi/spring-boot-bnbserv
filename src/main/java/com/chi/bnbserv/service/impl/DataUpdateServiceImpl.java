@@ -17,8 +17,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import com.chi.bnbserv.entity.ListingColumnBean;
+import com.chi.bnbserv.exception.FileNotFoundException;
 import com.chi.bnbserv.service.DataUpdateService;
 import com.chi.bnbserv.util.FileUtil;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
 @Service
 public class DataUpdateServiceImpl implements DataUpdateService {
@@ -216,7 +220,7 @@ public class DataUpdateServiceImpl implements DataUpdateService {
         return savePath;
     }
 
-        /**
+    /**
      * 解壓縮 Gzip
      * 
      * @param String filePathString 檔案路徑
@@ -230,4 +234,46 @@ public class DataUpdateServiceImpl implements DataUpdateService {
         return true;
     }
 
+    /**
+     * 讀取 csv，並 map 為指定的 bean (陣列形式回傳，預設限制回傳數量)
+     * @param String path 檔案名稱
+     * @return List<T>
+     */
+    @Override
+    public List<ListingColumnBean> mapFileToListingBean(Path filePath) {
+        return mapFileToListingBean(filePath, 100);
+    }
+
+    /**
+     * 讀取 csv，並 map 為指定的 bean (陣列形式回傳)
+     * @param String path 檔案名稱
+     * @param Integer maxSize 限制回傳數量
+     * @return List<T>
+     */
+    @Override
+    public List<ListingColumnBean> mapFileToListingBean(Path filePath, Integer maxSize) {
+        try {
+            if (!Files.exists(filePath)) throw new FileNotFoundException(String.format("指定檔案不存在: '%s'", filePath));
+
+            // 讀取 csv 檔案，並 map 成 bean
+            Reader reader = Files.newBufferedReader(filePath);
+            List<ListingColumnBean> beans = new CsvToBeanBuilder<ListingColumnBean>(reader)
+                                    .withType(ListingColumnBean.class)
+                                    .withSeparator(',')
+                                    .withQuoteChar('"')
+                                    .withEscapeChar('\\')
+                                    .withSkipLines(0)
+                                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                                    .build()
+                                    .parse();
+            if (maxSize != null) {
+                return beans.subList(0, Math.min(maxSize, beans.size()));
+            } else {
+                return beans;
+            }
+        } catch (Exception e) {
+            // e.printStackTrace();
+            throw new RuntimeException("csv 檔案讀取失敗: " + e.getMessage());
+        }
+    }
 }

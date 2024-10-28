@@ -19,8 +19,8 @@
 }
 
 /* ===== LOADER ===== */
-/* HTML: <div class="loader"></div> */
-.loader {
+/* HTML: <div class="loader-bar"></div> */
+.loader-bar {
   width: 120px;
   height: 22px;
   border-radius: 20px;
@@ -28,7 +28,7 @@
   border: 2px solid;
   position: relative;
 }
-.loader::before {
+.loader-bar::before {
   content: "";
   position: absolute;
   margin: 2px;
@@ -40,6 +40,17 @@
 @keyframes l6 {
     100% {inset:0}
 }
+
+/* HTML: <div class="loader-spinner"></div> */
+.loader-spinner {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid lightblue;
+  border-right-color: orange;
+  animation: l2 1s infinite linear;
+}
+@keyframes l2 {to{transform: rotate(1turn)}}
 
 /* ===== COMPONENTS ===== */
 /* -- card -- */

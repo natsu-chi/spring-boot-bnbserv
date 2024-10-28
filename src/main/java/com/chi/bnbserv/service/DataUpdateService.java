@@ -29,4 +29,19 @@ public interface DataUpdateService {
      * @return boolean
      */
     public boolean decompressGz(String savedFilePath) throws IOException;
+
+    /**
+     * 讀取 csv，並 map 為指定的 bean (陣列形式回傳，預設限制回傳數量)
+     * @param String path 檔案名稱
+     * @return List<T>
+     */
+    List<? extends CsvBean> mapFileToListingBean(Path filePath);
+
+    /**
+     * 讀取 csv，並 map 為指定的 bean (陣列形式回傳)
+     * @param String path 檔案名稱
+     * @param Integer maxSize 限制回傳數量
+     * @return List<T>
+     */
+    List<? extends CsvBean> mapFileToListingBean(Path filePath, Integer maxSize);
 }
