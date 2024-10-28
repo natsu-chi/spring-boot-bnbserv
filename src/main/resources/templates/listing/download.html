@@ -81,7 +81,7 @@
         const dataType = $("input[name='dataType']:checked").val();
         if (city !== undefined && dataType !== undefined) {
           $.ajax({
-            url: "/api/data/listing/download/listing",
+            url: "/api/data/listing/download/list",
             type: "GET",
             data: { city: city, dataType: dataType },
             xhrFields: {
