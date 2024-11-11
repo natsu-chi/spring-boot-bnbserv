@@ -5,8 +5,8 @@
       <form id="form1" action="/api/data/listing/download" method="get">
         <div class="mb-3">
           <label for="inputSelect01" class="form-label">選擇區域</label>
-          <select id="inputSelect01" class="form-select" name="city" th:each="city: ${cities}">
-            <option th:text="${city.country} + ' > ' + ${city.region} + ' > ' + ${city.city}" th:value="${city.id}">option</option>
+          <select id="inputSelect01" class="form-select" name="city">
+            <option th:each="city: ${cities}" th:text="${city.country} + ' > ' + ${city.region} + ' > ' + ${city.city}" th:value="${city.id}">option</option>
           </select>
         </div>
         <div class="mb-3">
