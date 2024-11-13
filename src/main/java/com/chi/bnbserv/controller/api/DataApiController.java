@@ -1,6 +1,8 @@
 package com.chi.bnbserv.controller.api;
 
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,8 +80,9 @@ public class DataApiController {
                     default:
                         throw new IllegalArgumentException("Invalid version: " + version);
                 }
+                System.out.println("path: " + path);
                 String[] part = path.split("/");
-                fileName = part[part.length - 3] + "_" + part[part.length - 1];
+                fileName = URLEncoder.encode(part[part.length - 3], StandardCharsets.UTF_8.toString()) + "_" + URLEncoder.encode(part[part.length - 1], StandardCharsets.UTF_8.toString());
                 byte[] fileByteArray = fsi.download(path + "/listings.csv", "resource");
                 
                 if (fileByteArray == null) throw new FileNotFoundException("無指定檔案");
@@ -112,7 +116,7 @@ public class DataApiController {
     }
 
     @PostMapping("/data/listing/fetch")
-    public ResponseEntity<ResponseDto> fetchListingData(@RequestBody RequestListingDto requestDto) {
+    public ResponseEntity<ResponseDto> fetchListingData(@Validated @RequestBody RequestListingDto requestDto) {
         String savedDir = "";
         String city = requestDto.getCity();
         String dataType = requestDto.getDataType();
