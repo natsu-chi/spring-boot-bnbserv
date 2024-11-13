@@ -1,6 +1,7 @@
 package com.chi.bnbserv.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,6 @@ public interface CityRepo extends JpaRepository<City, Integer>{
            "AND c.active = 'Y' " +
            "AND a.id = :id")
     List<CityDetailsDto> fetchActiveCityDetailsById(@Param("id") Integer id);
+
+    Optional<City> findFirstByNameOrderByIdAsc(String name);
 }
