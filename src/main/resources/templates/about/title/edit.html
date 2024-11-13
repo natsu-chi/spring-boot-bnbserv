@@ -1,0 +1,118 @@
+<div class="card" th:fragment="edit()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="container-fluid">
+      <div class="card">
+        <h5 class="card-header"><a href="list" class="btn btn-sm btn-outline-primary">回上頁</a></h5>
+        <div class="card-body">
+          <form id="form1" action="/api/data/listing/update" method="post">
+            <div class="mb-3">
+              <label for="inputTitle" class="form-label">標題</label>
+              <input type="text" class="form-control" id="inputTitle" th:value="${data.title}" />
+              <div id="inputTitle" class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editor" class="form-label">內容</label>
+              <div id="editor">
+                <p th:utext="${data.content}">Content from CKEditor 5!</p>
+              </div>
+            </div>
+            <input type="hidden" name="id" id="titleId" th:value="${data.id}" />
+            <button type="button" class="btn btn-outline-dark" onclick="window.history.back();">取消</button>
+            <button type="submit" class="btn btn-primary">修改</button>
+          </form>
+        </div>
+      </div>
+      <input type="hidden" id="toastToggle" value="0">
+
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide="true">
+          <div class="toast-header">
+            <strong class="me-auto">更新通知</strong>
+            <small>剛剛</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">內容修改成功！</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">  
+  // CKEditor 設定
+  var editor;
+  const { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } = CKEDITOR;
+  ClassicEditor.create(document.querySelector("#editor"), {
+    plugins: [Essentials, Bold, Italic, Font, Paragraph],
+    toolbar: ["undo", "redo", "|", "bold", "italic", "|", "fontSize", "fontColor"],
+  })
+    .then((newEditor) => {
+      editor = newEditor;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  // 表單驗證
+  var flagEditor = false;
+
+  /**
+   * 檢查表單欄位是否擇一輸入
+   *
+   * @param
+   * @returns {boolean}
+   */
+  function checkAllInputs() {
+    let editorData = editor.getData();
+    flagTitle = $("#inputTitle").val() !== "";
+    // 移除外層的 <p></p>
+    editorData = editorData.replace(/<p>/, "");
+    editorData = editorData.replace(/<\/p>$/, "");
+    flagEditor = editorData !== "";
+    return flagTitle || flagEditor;
+  }
+
+  /**
+   * Toast 顯示控制
+   *
+   * @param
+   * @returns {}
+   */
+  function showToast() {
+    const toastLive = document.getElementById("liveToast");
+    const toast = new bootstrap.Toast(toastLive);
+    toast.show();
+  }
+
+  $(document).ready(function () {
+    $("#form1").on("submit", (event) => {
+      event.preventDefault();
+      if (!checkAllInputs()) return false;
+
+      // CKEditor 表單資料處理
+      let editorData = editor.getData();
+      editorData = editorData.replace(/<p>/, ""); // 移除外層的 <p></p>
+      editorData = editorData.replace(/<\/p>$/, "");
+
+      let data = {
+        id: $("#titleId").val(),
+        title: $("#inputTitle").val(),
+        content: editorData,
+      };
+
+      $.ajax({
+        url: "/setting/about/title/update",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+          showToast();
+        },
+        error: function (xhr, status, error) {
+          alert("修改失敗，請稍後再試");
+        },
+      });
+    });
+  });
+</script>
