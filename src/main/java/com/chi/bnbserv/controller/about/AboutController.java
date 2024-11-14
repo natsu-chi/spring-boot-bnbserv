@@ -30,6 +30,7 @@ import com.chi.bnbserv.entity.AboutType;
 import com.chi.bnbserv.exception.ResourceNotFoundException;
 import com.chi.bnbserv.repository.AboutItemRepo;
 import com.chi.bnbserv.repository.AboutTypeRepo;
+import com.chi.bnbserv.service.impl.FileServiceImpl;
 
 
 @Controller
@@ -116,18 +117,8 @@ public class AboutController {
 
         // 儲存圖片檔案
         if (photo != null && !photo.isEmpty()) {
-            String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
-            Path targetLocation = Paths.get(uploadDir).resolve(fileName);
-        
-            try {
-                Files.copy(photo.getInputStream(), targetLocation);
-                aboutItem.setPhoto(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity
-                        .status(500)
-                        .body(new ResponseDto("500", "檔案上傳失敗: ", e.getMessage()));
-            }
+            FileServiceImpl fileServiceImpl = new FileServiceImpl();
+            fileServiceImpl.handleUpload(photo, uploadDir);
         }
 
         aboutItemRepo.save(aboutItem);
