@@ -24,12 +24,10 @@ function showPreviewImg(event, elementId) {
         // 當檔案讀取完成時，顯示圖片
         reader.onload = function(e) {
             previewImg.src = e.target.result; // 設定圖片的來源
-            previewImg.style.display = "block"; // 顯示圖片
         };
-
+        
         reader.readAsDataURL(file); // 讀取檔案內容
     } else {
-        document.getElementById("fileInput").value = "";
         alert("請上傳圖片檔案！");
     }
 }
