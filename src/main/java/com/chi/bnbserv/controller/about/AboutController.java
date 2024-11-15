@@ -1,9 +1,5 @@
 package com.chi.bnbserv.controller.about;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +25,7 @@ import com.chi.bnbserv.entity.AboutType;
 import com.chi.bnbserv.exception.ResourceNotFoundException;
 import com.chi.bnbserv.repository.AboutItemRepo;
 import com.chi.bnbserv.repository.AboutTypeRepo;
+import com.chi.bnbserv.service.impl.AboutItemServiceImpl;
 import com.chi.bnbserv.service.impl.FileServiceImpl;
 
 
@@ -40,6 +36,8 @@ public class AboutController {
     private AboutItemRepo aboutItemRepo;
     @Autowired
     private AboutTypeRepo aboutTypeRepo;
+    @Autowired
+    private AboutItemServiceImpl aboutService;
 
     @Value("${upload-dir.about}") // 配置檔案上傳的目錄
     private String uploadDir;
@@ -125,5 +123,11 @@ public class AboutController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDto("200", "內容修改成功", null));
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam("id[]") List<Integer> idList) {
+        aboutService.updateActiveByIds(idList, "");
+        return "redirect:/setting/about/about/list?typeId=2";
     }
 }

@@ -13,9 +13,9 @@
                 <th scope="col-1">
                   <input type="checkbox" class="form-check-input" name="chk-all" id="chk-all" />
                 </th>
-                <th scope="col-1">類別</th>
                 <th scope="col-3">標題</th>
                 <th scope="col-6">內容</th>
+                <th scope="col-6">圖片</th>
                 <th scope="col-1">修改</th>
               </tr>
             </thead>
@@ -24,9 +24,9 @@
                 <th scope="row">
                   <input type="checkbox" class="form-check-input chk" name="id[]" th:id="'chk-' + ${el.id}" th:value="${el.id}" />
                 </th>
-                <td th:text="${el.typeId}"></td>
                 <td th:text="${el.itemName}"></td>
                 <td th:utext="${el.content}"></td>
+                <td><img th:src="'/assets/images/about/' + ${el.photo}" alt="" style="height: 100px;"></td>
                 <td data-el-id="${el.id}"><a th:href="@{/setting/about/about/edit/2(id=${el.id})}" class="btn btn-sm btn-outline-primary">修改</a></td>
               </tr>
             </tbody>
