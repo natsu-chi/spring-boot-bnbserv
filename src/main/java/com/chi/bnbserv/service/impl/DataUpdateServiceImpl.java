@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -75,7 +78,7 @@ public class DataUpdateServiceImpl implements DataUpdateService {
         try {
             decompressGz(savedDir + "/listings.csv.gz");
         } catch (IOException e) {
-            
+            e.printStackTrace();
         }
         return savedDir.replace(replaceString, "");
     }
@@ -88,6 +91,14 @@ public class DataUpdateServiceImpl implements DataUpdateService {
      */
     private List<String> getUrlsByCity(String city) {
         List<String> urlList = new ArrayList<>();
+        // 處理特殊字元
+        String[] parts;
+        String country;
+        String region;
+        String cityName;
+        String encodedCountry;
+        String encodedRegion;
+        String encodedCityName;
 
         try {
             Document doc = Jsoup.connect(targetUrl).get();
@@ -95,7 +106,24 @@ public class DataUpdateServiceImpl implements DataUpdateService {
             for (Element link : links) {
                 String fileUrl = link.absUrl("href");
                 if (fileUrl.contains(city)) {
-                    urlList.add(fileUrl);
+                    parts = fileUrl.split("/");
+                    if(parts.length >= 5) {
+                        // URL 編碼處理
+                        country = parts[3];
+                        region = parts[4];
+                        cityName = parts[5];
+                        
+                        encodedCountry = URLEncoder.encode(country, StandardCharsets.UTF_8.toString());
+                        encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
+                        encodedCityName = URLEncoder.encode(cityName, StandardCharsets.UTF_8.toString());
+                    
+                        // 組合完整的 URL
+                        urlList.add(parts[0] + "//" + parts[2] + "/" + encodedCountry + "/" 
+                        + encodedRegion + "/" + encodedCityName + "/" + parts[6] + "/" 
+                        + parts[7] + "/" + parts[8]);
+                    } else {
+                        urlList.add(fileUrl);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -192,6 +220,7 @@ public class DataUpdateServiceImpl implements DataUpdateService {
         // src/main/resources/static/dataset/gz/united-states/tx/austin/2024-06-26/reviews.csv.gz
         while (it.hasNext()) {
             layerPath = layerPath.replaceAll(it.next(), "");
+            layerPath = URLDecoder.decode(layerPath, StandardCharsets.UTF_8.toString());
         }
         outputPath = dir + layerPath + fileName;
 

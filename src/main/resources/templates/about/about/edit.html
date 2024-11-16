@@ -1,0 +1,135 @@
+<div class="card" th:fragment="edit()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="container-fluid">
+      <div class="card">
+        <h5 class="card-header"><a class="btn btn-sm btn-outline-primary" onclick="window.history.back();">回上頁</a></h5>
+        <div class="card-body">
+          <form id="form1" action="/api/data/listing/update" method="post">
+            <div class="mb-3">
+              <label for="inputTitle" class="form-label">子標題</label>
+              <input type="text" class="form-control" id="inputTitle" th:value="${data.itemName}" />
+              <div id="inputTitle" class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editor" class="form-label">內容</label>
+              <div id="editor">
+                <p th:utext="${data.content}">Content from CKEditor 5!</p>
+              </div>
+            </div>
+            <div class="mb-3 row h-100">
+              <div class="col-md-6 mb-3"><input type="file" class="form-control" id="inputImg"></div>
+              <div class="col-md-6 text-center" style="height: fit-content;"><img th:src="'/assets/images/about/' + ${data.photo}" alt="" id="imgPreview" class="bg-cover" style="width: 300px; height: 200px;"></div>
+            </div>
+            <input type="hidden" name="id" id="titleId" th:value="${data.id}">
+            <button type="button" class="btn btn-outline-dark" onclick="window.history.back();">取消</button>
+            <button type="submit" class="btn btn-primary">修改</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide="true">
+          <div class="toast-header">
+            <strong class="me-auto">更新通知</strong>
+            <small>剛剛</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">內容修改成功！</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src">
+  // CKEditor 設定
+  var editor;
+  const { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } = CKEDITOR;
+  ClassicEditor.create(document.querySelector("#editor"), {
+    plugins: [Essentials, Bold, Italic, Font, Paragraph],
+    toolbar: ["undo", "redo", "|", "bold", "italic", "|", "fontSize", "fontColor"],
+  })
+    .then((newEditor) => {
+      editor = newEditor;
+    })
+    .catch((error) => {
+      alert("CKEditor import error");
+    });
+
+  // 表單驗證
+  var flagEditor = false;
+
+  /**
+   * 檢查表單欄位是否擇一輸入
+   *
+   * @param
+   * @returns {boolean}
+   */
+  function checkAllInputs() {
+    let editorData = editor.getData();
+    flagTitle = $("#inputTitle").val() !== "";
+    // 移除外層的 <p></p>
+    editorData = editorData.replace(/<p>/, "");
+    editorData = editorData.replace(/<\/p>$/, "");
+    flagEditor = editorData !== "";
+    return flagTitle || flagEditor;
+  }
+
+  /**
+   * Toast 顯示控制
+   *
+   * @param
+   * @returns {}
+   */
+   function showToast() {
+    const toastLive = document.getElementById("liveToast");
+    const toast = new bootstrap.Toast(toastLive);
+    toast.show();
+  }
+
+  $(document).ready(function () {
+    // 偵測圖片上傳
+    $("#inputImg").on("change", function(event) {
+        showPreviewImg(event, "imgPreview");
+    });
+
+    $("#form1").on("submit", (event) => {
+      event.preventDefault();
+      if (!checkAllInputs()) return false;
+
+      // CKEditor 表單資料處理
+      let editorData = editor.getData();
+      editorData = editorData.replace(/<p>/, ""); // 移除外層的 <p></p>
+      editorData = editorData.replace(/<\/p>$/, "");
+
+      // 以 FormData 物件來處理檔案上傳
+      let fd = new FormData();
+      fd.append("id", $("#titleId").val());
+      fd.append("title", $("#inputTitle").val());
+      fd.append("content", editorData);
+
+      // 處理圖片檔案，將圖片加入 FormData
+      let fileInput = $("#inputImg")[0];
+      if (fileInput.files.length > 0) {
+        fd.append("photo", fileInput.files[0]);
+      }
+
+      $.ajax({
+        url: "/setting/about/about/update",
+        type: "POST",
+        contentType: "application/json",
+        data: fd,
+        processData: false,  // 讓 jQuery 不要處理資料
+        contentType: false,  // 讓 jQuery 不要設定 content-type (因為是表單資料)
+        success: function (response) {
+          showToast();
+        },
+        error: function (xhr, status, error) {
+          // console.log(xhr.responseText);
+          alert("修改失敗，請稍後再試");
+        },
+      });
+    });
+  });
+</script>

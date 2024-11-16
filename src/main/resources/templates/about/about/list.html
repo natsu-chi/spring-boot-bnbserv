@@ -1,0 +1,93 @@
+<div class="card" th:fragment="list()">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4" th:text="${title}"></h5>
+    <div class="ms-3">
+      <a href="javascript:doDelete('formDelete')" class="btn btn-sm btn-danger">批次刪除</a>
+    </div>
+    <div class="container-fluid">
+      <div class="overflow-auto vh-100 mb-3">
+        <form name="formDelete" id="formDelete" action="delete" method="post">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th scope="col-1">
+                  <input type="checkbox" class="form-check-input" name="chk-all" id="chk-all" />
+                </th>
+                <th scope="col-3">標題</th>
+                <th scope="col-6">內容</th>
+                <th scope="col-6">圖片</th>
+                <th scope="col-1">修改</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr th:each="el: ${list}">
+                <th scope="row">
+                  <input type="checkbox" class="form-check-input chk" name="id[]" th:id="'chk-' + ${el.id}" th:value="${el.id}" />
+                </th>
+                <td th:text="${el.itemName}"></td>
+                <td th:utext="${el.content}"></td>
+                <td><img th:src="'/assets/images/about/' + ${el.photo}" alt="" style="height: 100px;"></td>
+                <td data-el-id="${el.id}"><a th:href="@{/setting/about/about/edit/2(id=${el.id})}" class="btn btn-sm btn-outline-primary">修改</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" th:if="${totalPages != null}">
+        <div class="btn-group me-2" role="group" aria-label="First group">
+          <button
+            type="button"
+            th:class="${p == currentPage ? 'btn btn-primary' : 'btn btn-light'}"
+            th:each="p : ${#numbers.sequence(1, showPageNumber)}"
+            th:text="${p}"
+            th:if="${totalPages >= 1}"
+            th:attr="data-pageNumber=${p}"
+            onclick="goTopage(this);"
+          >
+            1
+          </button>
+        </div>
+        <div class="mx-2" th:if="${currentPage > showPageNumber}"><span>...</span></div>
+        <div class="btn-group me-2" role="group" aria-label="Second group">
+          <button type="button" class="btn btn-primary" th:text="${currentPage}" th:if="${ currentPage > showPageNumber && currentPage < (totalPages-(showPageNumber-1)) }">1</button>
+        </div>
+        <div class="mx-2" th:if="${totalPages > showPageNumber && currentPage < (totalPages-(showPageNumber-1))}"><span>...</span></div>
+        <div class="btn-group" role="group" aria-label="Third group">
+          <button
+            type="button"
+            th:class="${p == currentPage ? 'btn btn-primary' : 'btn btn-light'}"
+            th:each="p : ${#numbers.sequence(totalPages-(showPageNumber-1), totalPages)}"
+            th:text="${p}"
+            th:if="${totalPages > (showPageNumber*2)}"
+            th:attr="data-pageNumber=${p}"
+            onclick="goTopage(this);"
+          >
+            1
+          </button>
+        </div>
+        <div class="btn-group ms-auto" role="group" aria-label="Four group">
+          <button
+            type="button"
+            th:class="${(currentPage != 1) ? 'btn btn-outline-primary' : 'btn btn-outline-dark'}"
+            th:attr="data-pageNumber=${currentPage-1}"
+            th:attrappend="disabled=${currentPage == 1 ? 'disabled' : null}"
+            onclick="goTopage(this);"
+          >
+            上一頁
+          </button>
+          <button
+            type="button"
+            th:class="${(currentPage!= totalPages) ? 'btn btn-outline-primary' : 'btn btn-outline-dark'}"
+            th:attr="data-pageNumber=${currentPage+1}"
+            th:attrappend="disabled=${currentPage == totalPages ? 'disabled' : null}"
+            onclick="goTopage(this);"
+          >
+            下一頁
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:fragment="src"></script>
