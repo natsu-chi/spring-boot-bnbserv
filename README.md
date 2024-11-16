@@ -2,8 +2,13 @@
 
 ![專案封面圖](https://github.com/natsu-chi/images-folder/blob/main/spring-boot-bnbserv/img01.jpg?raw=true)
 
-## 功能
+## 目錄
+[功能](#功能)<br/>
+[畫面](#畫面)<br/>
+[專案技術](#專案技術)<br/>
+[資料夾說明](#資料夾說明)<br/>
 
+## 功能
 資料管理
 - [x] 爬蟲下載、讀取 csv 檔，並更新至資料庫
 - [x] csv 檔案下載至本機
@@ -11,16 +16,15 @@
 
 頁面管理
 - [x] 關於我們：動態版面控制，支援文字編輯器編輯與圖片上傳，並可批次調整是否顯示
-...
 
 ## 畫面
 **房屋資料查詢**
 ![功能圖片 4](https://github.com/natsu-chi/images-folder/blob/main/spring-boot-bnbserv/img04.jpg?raw=true)
 ![功能圖片 1](https://github.com/natsu-chi/images-folder/blob/main/spring-boot-bnbserv/img01.jpg?raw=true)
 ![功能圖片 2](https://github.com/natsu-chi/images-folder/blob/main/spring-boot-bnbserv/img03.jpg?raw=true)
-**房屋資料下載至本機**
-基本資料：房屋資訊
-詳細資料：房屋資訊 + 屋主資料 + 評價
+**房屋資料下載至本機**<br/>
+基本資料：房屋資訊<br/>
+詳細資料：房屋資訊 + 屋主資料 + 評價<br/>
 ![功能圖片 3](https://github.com/natsu-chi/images-folder/blob/main/spring-boot-bnbserv/img02.jpg?raw=true)
 **動態版面調整：關於我們頁面**
 標題設定
